@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather Dashboard — India</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       SIDEBAR
+  ═══════════════════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">🌤</span>
+      <span class="logo-text">WeatherIN</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-tab="dashboard">
+        <span class="nav-icon">🏠</span>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-item" data-tab="analytics">
+        <span class="nav-icon">📊</span>
+        <span>Analytics</span>
+      </button>
+      <button class="nav-item" data-tab="history">
+        <span class="nav-icon">📋</span>
+        <span>History</span>
+      </button>
+      <button class="nav-item" data-tab="trends">
+        <span class="nav-icon">📈</span>
+        <span>Trends</span>
+      </button>
+      <button class="nav-item" data-tab="conditions">
+        <span class="nav-icon">🌦</span>
+        <span>Conditions</span>
+      </button>
+      <button class="nav-item" data-tab="manage">
+        <span class="nav-icon">⚙️</span>
+        <span>Manage Data</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="health-badge" id="health-badge">
+        <span class="health-dot"></span>
+        <span id="health-text">Checking…</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════════
+       MAIN CONTENT
+  ═══════════════════════════════════════════════════ -->
+  <main class="main">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title" id="page-title">Dashboard</h1>
+        <span class="page-subtitle" id="page-subtitle">Live weather for India</span>
+      </div>
+      <div class="topbar-right">
+        <div class="search-wrap">
+          <span class="search-prefix">🔍</span>
+          <input id="global-search" type="text" placeholder="Search city (e.g. Mumbai, Jaipur…)" autocomplete="off" />
+          <button id="global-search-btn">Search</button>
+        </div>
+        <div class="clock-badge" id="clock-badge">12:00 AM</div>
+      </div>
+    </header>
+
+    <!-- ─── TAB: DASHBOARD ─── -->
+    <section class="tab-panel active" id="tab-dashboard">
+
+      <!-- Current weather hero -->
+      <div class="hero-grid">
+        <div class="hero-card" id="hero-card">
+          <div class="hero-loading" id="hero-loading">
+            <div class="spinner"></div>
+            <p>Loading weather for Delhi…</p>
+          </div>
+          <div class="hero-content hidden" id="hero-content">
+            <div class="hero-left">
+              <div class="hero-city" id="hero-city">Delhi</div>
+              <div class="hero-temp" id="hero-temp">--<sup>°</sup></div>
+              <div class="hero-desc" id="hero-desc">--</div>
+              <div class="hero-hilo" id="hero-hilo">H:--° &nbsp; L:--°</div>
+              <div class="hero-meta">
+                <span class="meta-chip" id="meta-humidity">💧 --%</span>
+                <span class="meta-chip" id="meta-wind">💨 -- km/h</span>
+              </div>
+              <button class="store-btn" id="store-btn">💾 Save to Database</button>
+            </div>
+            <div class="hero-right">
+              <div class="hero-illus" id="hero-illus">🌤️</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick stats -->
+        <div class="quick-stats">
+          <div class="stat-card" id="stat-humidity">
+            <div class="stat-icon">💧</div>
+            <div class="stat-label">Humidity</div>
+            <div class="stat-value" id="sv-humidity">--%</div>
+          </div>
+          <div class="stat-card" id="stat-wind">
+            <div class="stat-icon">💨</div>
+            <div class="stat-label">Wind Speed</div>
+            <div class="stat-value" id="sv-wind">-- km/h</div>
+          </div>
+          <div class="stat-card" id="stat-high">
+            <div class="stat-icon">🌡️</div>
+            <div class="stat-label">Today High</div>
+            <div class="stat-value" id="sv-high">--°</div>
+          </div>
+          <div class="stat-card" id="stat-low">
+            <div class="stat-icon">❄️</div>
+            <div class="stat-label">Today Low</div>
+            <div class="stat-value" id="sv-low">--°</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hourly forecast strip -->
+      <div class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">Hourly Forecast</h2>
+          <span class="section-note">Based on current conditions</span>
+        </div>
+        <div class="forecast-strip" id="forecast-strip"></div>
+      </div>
+
+      <!-- Popular Indian cities -->
+      <div class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">Popular Cities — India</h2>
+          <span class="section-note">Click to view weather</span>
+        </div>
+        <div class="city-chips">
+          <button class="city-chip active-chip" data-city="Delhi">🏛 Delhi</button>
+          <button class="city-chip" data-city="Mumbai">🌊 Mumbai</button>
+          <button class="city-chip" data-city="Bangalore">🌿 Bangalore</button>
+          <button class="city-chip" data-city="Chennai">🌴 Chennai</button>
+          <button class="city-chip" data-city="Kolkata">🎨 Kolkata</button>
+          <button class="city-chip" data-city="Hyderabad">💎 Hyderabad</button>
+          <button class="city-chip" data-city="Lucknow">🕌 Lucknow</button>
+          <button class="city-chip" data-city="Jaipur">🏰 Jaipur</button>
+          <button class="city-chip" data-city="Pune">🎓 Pune</button>
+          <button class="city-chip" data-city="Ahmedabad">🏗 Ahmedabad</button>
+          <button class="city-chip" data-city="Varanasi">🪔 Varanasi</button>
+          <button class="city-chip" data-city="Agra">🕌 Agra</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ─── TAB: ANALYTICS ─── -->
+    <section class="tab-panel" id="tab-analytics">
+      <div class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">Temperature Analytics</h2>
+          <div class="input-row">
+            <input id="analytics-city" type="text" placeholder="City name…" class="inline-input" />
+            <button class="action-btn" id="analytics-btn">Analyse</button>
+          </div>
+        </div>
+        <div id="analytics-result" class="result-area">
+          <p class="hint-text">Enter a city name and click Analyse to see stored temperature statistics.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── TAB: HISTORY ─── -->
+    <section class="tab-panel" id="tab-history">
+      <div class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">Weather History</h2>
+          <div class="input-row">
+            <input id="history-city" type="text" placeholder="City name…" class="inline-input" />
+            <input id="history-start" type="date" class="inline-input" />
+            <input id="history-end" type="date" class="inline-input" />
+            <button class="action-btn" id="history-btn">Load History</button>
+          </div>
+        </div>
+        <div id="history-result" class="result-area">
+          <p class="hint-text">Enter a city and optional date range, then click Load History.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── TAB: TRENDS ─── -->
+    <section class="tab-panel" id="tab-trends">
+      <div class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">7-Day Temperature Trends</h2>
+          <div class="input-row">
+            <input id="trends-city" type="text" placeholder="City name…" class="inline-input" />
+            <button class="action-btn" id="trends-btn">Load Trends</button>
+          </div>
+        </div>
+        <div id="trends-result" class="result-area">
+          <p class="hint-text">Enter a city to see the last 7 days of average temperature data.</p>
+        </div>
+        <div class="chart-wrap" id="trends-chart-wrap" style="display:none">
+          <canvas id="trends-chart" height="80"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── TAB: CONDITIONS ─── -->
+    <section class="tab-panel" id="tab-conditions">
+      <div class="section-card">
+        <div class="section-header">
+          <h2 class="section-title">Weather Condition Statistics</h2>
+          <div class="input-row">
+            <input id="conditions-city" type="text" placeholder="City name…" class="inline-input" />
+            <button class="action-btn" id="conditions-btn">Load Stats</button>
+          </div>
+        </div>
+        <div id="conditions-result" class="result-area">
+          <p class="hint-text">Enter a city to see how often each weather condition has been recorded.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── TAB: MANAGE DATA ─── -->
+    <section class="tab-panel" id="tab-manage">
+      <div class="manage-grid">
+
+        <!-- Fetch & Store -->
+        <div class="section-card">
+          <div class="section-header">
+            <h2 class="section-title">💾 Fetch &amp; Store Weather</h2>
+          </div>
+          <p class="card-desc">Fetch live weather from OpenWeatherMap and save it to the database.</p>
+          <div class="input-row mt">
+            <input id="store-city-input" type="text" placeholder="City name…" class="inline-input" />
+            <button class="action-btn green" id="store-city-btn">Fetch &amp; Store</button>
+          </div>
+          <div id="store-result" class="result-area small"></div>
+        </div>
+
+        <!-- Delete Old Data -->
+        <div class="section-card">
+          <div class="section-header">
+            <h2 class="section-title">🗑️ Delete Old Records</h2>
+          </div>
+          <p class="card-desc">Remove weather records older than a specified number of days.</p>
+          <div class="input-row mt">
+            <input id="delete-days" type="number" value="30" min="1" class="inline-input short" />
+            <span class="input-label">days old</span>
+            <button class="action-btn red" id="delete-btn">Delete</button>
+          </div>
+          <div id="delete-result" class="result-area small"></div>
+        </div>
+
+        <!-- System Health -->
+        <div class="section-card">
+          <div class="section-header">
+            <h2 class="section-title">🩺 System Health</h2>
+          </div>
+          <div id="health-result" class="result-area small">
+            <p class="hint-text">Loading health status…</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
+  </main>
+
+  <script src="/js/app.js" defer></script>
+</body>
+</html>
