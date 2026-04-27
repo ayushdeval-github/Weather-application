@@ -13,6 +13,29 @@
   function round(n) { return Math.round(n); }
   function fmt(n) { return round(n) + '°'; }
 
+  /* ── Hero card theme per condition ─────────────────────── */
+  var CARD_THEMES = {
+    Clear:       'linear-gradient(135deg, #1a6b2e 0%, #2d8a3e 60%, #f59e0b 100%)',
+    Clouds:      'linear-gradient(135deg, #374151 0%, #4b5563 60%, #6b7280 100%)',
+    Rain:        'linear-gradient(135deg, #1e3a5f 0%, #1e40af 60%, #2563eb 100%)',
+    Drizzle:     'linear-gradient(135deg, #1e3a5f 0%, #2563eb 60%, #60a5fa 100%)',
+    Thunderstorm:'linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%)',
+    Snow:        'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 60%, #7dd3fc 100%)',
+    Mist:        'linear-gradient(135deg, #374151 0%, #6b7280 60%, #9ca3af 100%)',
+    Fog:         'linear-gradient(135deg, #374151 0%, #6b7280 60%, #9ca3af 100%)',
+    Haze:        'linear-gradient(135deg, #78350f 0%, #92400e 60%, #b45309 100%)',
+    Smoke:       'linear-gradient(135deg, #292524 0%, #44403c 60%, #57534e 100%)',
+    Dust:        'linear-gradient(135deg, #78350f 0%, #a16207 60%, #ca8a04 100%)',
+    Sand:        'linear-gradient(135deg, #78350f 0%, #a16207 60%, #ca8a04 100%)',
+    Tornado:     'linear-gradient(135deg, #1a1a2e 0%, #312e81 60%, #4338ca 100%)'
+  };
+  var DEFAULT_THEME = 'linear-gradient(135deg, #0d4f6e 0%, #0a6b5c 60%, #065f46 100%)';
+
+  function applyCardTheme(condition) {
+    var card = document.getElementById('hero-card');
+    if (card) card.style.background = CARD_THEMES[condition] || DEFAULT_THEME;
+  }
+
   /* ── Clock ─────────────────────────────────────────────── */
   function updateClock() {
     var now = new Date();
@@ -88,6 +111,8 @@
   async function loadCurrentWeather(city) {
     var loading = document.getElementById('hero-loading');
     var content = document.getElementById('hero-content');
+    var loadingText = document.getElementById('hero-loading-text');
+    if (loadingText) loadingText.textContent = 'Loading weather for ' + city.trim() + '…';
     loading.style.display = 'flex';
     content.classList.add('hidden');
 
@@ -481,6 +506,21 @@
      INIT
   ══════════════════════════════════════════════════════════ */
   async function init() {
+    // Auth guard — redirect to login if not authenticated
+    const token = localStorage.getItem('weatherin_token');
+    const userRaw = localStorage.getItem('weatherin_user');
+    if (!token || !userRaw) {
+      window.location.href = '/login.html';
+      return;
+    }
+
+    // Show user name in topbar
+    try {
+      const user = JSON.parse(userRaw);
+      var userBadge = document.getElementById('user-badge');
+      if (userBadge) userBadge.textContent = '👤 ' + user.name;
+    } catch (e) { /* ignore */ }
+
     updateClock();
     setInterval(updateClock, 30000);
     bindEvents();

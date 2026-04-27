@@ -790,3 +790,33 @@ body {
 
 .toast.success { border-color: rgba(16,185,129,0.60); }
 .toast.error   { border-color: rgba(239,68,68,0.60); }
+
+/* ── Auth: user badge & logout ── */
+.user-badge {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  white-space: nowrap;
+}
+
+.logout-btn {
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #dc2626;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.18s;
+  white-space: nowrap;
+}
+
+.logout-btn:hover {
+  background: #fecaca;
+}

@@ -73,6 +73,8 @@
           <button id="global-search-btn">Search</button>
         </div>
         <div class="clock-badge" id="clock-badge">12:00 AM</div>
+        <span class="user-badge" id="user-badge"></span>
+        <button class="logout-btn" id="logout-btn" onclick="(function(){ localStorage.removeItem('weatherin_token'); localStorage.removeItem('weatherin_user'); window.location.href='/login.html'; })()">Logout</button>
       </div>
     </header>
 
@@ -84,7 +86,7 @@
         <div class="hero-card" id="hero-card">
           <div class="hero-loading" id="hero-loading">
             <div class="spinner"></div>
-            <p>Loading weather for Delhi…</p>
+            <p id="hero-loading-text">Loading weather…</p>
           </div>
           <div class="hero-content hidden" id="hero-content">
             <div class="hero-left">

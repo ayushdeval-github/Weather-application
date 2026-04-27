@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const weatherRoutes = require('./routes/weatherRoutes');
+const authRoutes    = require('./routes/authRoutes');
 const errorMiddleware = require('./middleware/errorMiddleware');
 
 const app = express();
@@ -14,7 +15,10 @@ app.use(express.json());
 // Serve frontend static files from public/
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// Routes
+// Auth routes (public)
+app.use('/api/auth', authRoutes);
+
+// Weather routes
 app.use('/api/weather', weatherRoutes);
 
 // Error Middleware
