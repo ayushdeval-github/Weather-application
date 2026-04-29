@@ -161,14 +161,14 @@
 
     <!-- LOGIN FORM -->
     <div class="form-panel active" id="login-panel">
-      <form id="login-form">
+      <form id="login-form" autocomplete="off">
         <div class="form-group">
           <label class="form-label">Email</label>
-          <input type="email" class="form-input" id="login-email" placeholder="you@example.com" required />
+          <input type="email" class="form-input" id="login-email" placeholder="you@example.com" autocomplete="off" required />
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
-          <input type="password" class="form-input" id="login-password" placeholder="••••••••" required />
+          <input type="password" class="form-input" id="login-password" placeholder="••••••••" autocomplete="new-password" required />
         </div>
         <button type="submit" class="submit-btn" id="login-btn">Login</button>
       </form>
@@ -176,18 +176,18 @@
 
     <!-- SIGNUP FORM -->
     <div class="form-panel" id="signup-panel">
-      <form id="signup-form">
+      <form id="signup-form" autocomplete="off">
         <div class="form-group">
           <label class="form-label">Name</label>
-          <input type="text" class="form-input" id="signup-name" placeholder="Your name" required />
+          <input type="text" class="form-input" id="signup-name" placeholder="Your name" autocomplete="off" required />
         </div>
         <div class="form-group">
           <label class="form-label">Email</label>
-          <input type="email" class="form-input" id="signup-email" placeholder="you@example.com" required />
+          <input type="email" class="form-input" id="signup-email" placeholder="you@example.com" autocomplete="off" required />
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
-          <input type="password" class="form-input" id="signup-password" placeholder="••••••••" minlength="6" required />
+          <input type="password" class="form-input" id="signup-password" placeholder="••••••••" autocomplete="new-password" minlength="6" required />
         </div>
         <button type="submit" class="submit-btn" id="signup-btn">Create Account</button>
       </form>
@@ -201,6 +201,20 @@
 
       const errorMsg = document.getElementById('error-msg');
       const successMsg = document.getElementById('success-msg');
+
+      // Clear all form fields on page load (fixes logout bug)
+      function clearAllForms() {
+        document.getElementById('login-form').reset();
+        document.getElementById('signup-form').reset();
+        document.getElementById('login-email').value = '';
+        document.getElementById('login-password').value = '';
+        document.getElementById('signup-name').value = '';
+        document.getElementById('signup-email').value = '';
+        document.getElementById('signup-password').value = '';
+      }
+
+      // Clear forms when page loads
+      window.addEventListener('load', clearAllForms);
 
       function showError(msg) {
         errorMsg.textContent = msg;
@@ -227,6 +241,7 @@
           btn.classList.add('active');
           document.getElementById(btn.dataset.tab + '-panel').classList.add('active');
           hideMessages();
+          clearAllForms(); // Clear forms when switching tabs
         });
       });
 
