@@ -11,10 +11,14 @@ function cityFilter(city) {
 // 1️⃣ Current Weather (without caching)
 exports.getCurrentWeather = async (req, res, next) => {
   try {
-    const { city } = req.query;
-    if (!city) return res.status(400).json({ error: 'City is required' });
+    const { city, lat, lon } = req.query;
+    if (!city && (!lat || !lon)) {
+      return res.status(400).json({ error: 'City or latitude/longitude is required' });
+    }
 
-    const weatherData = await weatherService.fetchWeatherFromAPI(city);
+    const weatherData = lat && lon
+      ? await weatherService.fetchWeatherFromCoordinates(lat, lon)
+      : await weatherService.fetchWeatherFromAPI(city);
 
     res.json({ source: 'api', data: weatherData });
   } catch (error) {

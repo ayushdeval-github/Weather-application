@@ -70,6 +70,70 @@
     return json;
   }
 
+  async function loadCurrentWeatherByCoords(lat, lon) {
+    var loading = document.getElementById('hero-loading');
+    var content = document.getElementById('hero-content');
+    var loadingText = document.getElementById('hero-loading-text');
+    if (loadingText) loadingText.textContent = 'Loading weather for your location…';
+    loading.style.display = 'flex';
+    content.classList.add('hidden');
+
+    try {
+      var json = await apiFetch('/api/weather/current?lat=' + encodeURIComponent(lat) + '&lon=' + encodeURIComponent(lon));
+      var d = json.data;
+      currentData = d;
+
+      document.getElementById('hero-city').textContent = d.city;
+      document.getElementById('hero-temp').innerHTML = round(d.temperature) + '<sup>°</sup>';
+      document.getElementById('hero-desc').textContent = d.description || d.condition;
+      document.getElementById('hero-hilo').innerHTML =
+        'H:' + fmt(d.tempMax != null ? d.tempMax : d.temperature) +
+        '&nbsp;&nbsp;L:' + fmt(d.tempMin != null ? d.tempMin : d.temperature);
+
+      var windKmh = round(d.windSpeed * 3.6);
+      document.getElementById('meta-humidity').textContent = '💧 ' + d.humidity + '%';
+      document.getElementById('meta-wind').textContent = '💨 ' + windKmh + ' km/h';
+      document.getElementById('hero-illus').textContent = emoji(d.condition);
+
+      document.getElementById('sv-humidity').textContent = d.humidity + '%';
+      document.getElementById('sv-wind').textContent = windKmh + ' km/h';
+      document.getElementById('sv-high').textContent = fmt(d.tempMax != null ? d.tempMax : d.temperature);
+      document.getElementById('sv-low').textContent = fmt(d.tempMin != null ? d.tempMin : d.temperature);
+
+      renderForecast(d);
+
+      loading.style.display = 'none';
+      content.classList.remove('hidden');
+    } catch (e) {
+      loading.innerHTML = '<p style="color:#ef4444;font-size:14px">⚠️ ' + e.message + '</p>';
+    }
+  }
+
+  async function loadLocationWeather() {
+    if (!navigator.geolocation) {
+      return loadCurrentWeather('Delhi');
+    }
+
+    return new Promise(function (resolve) {
+      navigator.geolocation.getCurrentPosition(async function (position) {
+        try {
+          await loadCurrentWeatherByCoords(position.coords.latitude, position.coords.longitude);
+          resolve();
+        } catch (err) {
+          loadCurrentWeather('Delhi');
+          resolve();
+        }
+      }, function () {
+        loadCurrentWeather('Delhi');
+        resolve();
+      }, {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      });
+    });
+  }
+
   // Resolve the exact city name stored in DB by fetching current weather first
   // e.g. "Delhi" → "New Delhi" (what OpenWeatherMap returns and what gets stored)
   async function resolveStoredCityName(city) {
@@ -473,6 +537,11 @@
 
     /* Store from hero */
     document.getElementById('store-btn').addEventListener('click', storeCurrentWeather);
+    document.getElementById('location-btn').addEventListener('click', function () {
+      loadLocationWeather().catch(function () {
+        toast('Unable to use location. Loading default city.', 'error');
+      });
+    });
 
     /* Global search */
     document.getElementById('global-search-btn').addEventListener('click', globalSearch);
@@ -525,7 +594,7 @@
     setInterval(updateClock, 30000);
     bindEvents();
     loadHealth();
-    await loadCurrentWeather('Delhi');
+    await loadLocationWeather();
   }
 
   document.addEventListener('DOMContentLoaded', init);
